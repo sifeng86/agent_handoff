@@ -289,22 +289,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 ## 10 — auditor (optional)
 
-使用者說：「你是 auditor，審 JWT auth 這個任務。」Pipeline 外的角色是 detour：開工時設 `Current: auditor`、`Return-To: 6`；完成後交給 user 並清掉 `Return-To`。auditor 先只看目標、程式碼和產出，之後才讀 state 和 review。
-
-```
-Status: done
-Task: Add JWT auth to the API
-Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
-Step: 6
-Current: user
-Return-To: 
-Next action: Decide which findings in docs/handoff/2026-11-04-audit-jwt.md to adopt.
-Completed: plan, review, spec (rev 2), implement, verify (pass), audit
-Remaining:
-Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /api/health stays public
-Artifacts: docs/handoff/2026-11-04-verify-jwt.md, docs/handoff/2026-11-04-audit-jwt.md
-Last agent: gpt-6-astra@codex/host-2
-```
+使用者說：「你是 auditor，審 JWT auth 這個任務。」Pipeline 外臨時找來的角色**不動 `state.md`**：它停留在步驟 09 的內容。auditor 先只看目標、程式碼和產出，之後才讀 state 和 review；只 commit 自己的報告，然後直接回報給使用者。
 
 ```
 docs(audit): independent audit of JWT auth

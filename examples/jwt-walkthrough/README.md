@@ -31,7 +31,7 @@
 | 07 | planner | 回答問題 | implementer | detour：回到 `Return-To`，`Step` 不推進 |
 | 08 | implementer | 完成實作 | planner | 交出結果與證據 |
 | 09 | planner | 驗收 | user | 自己跑驗證，不只看報告 |
-| 10 | auditor | 第三方審計 | user | Pipeline 外的 detour；獨立判斷，直接交給 user |
+| 10 | auditor | 第三方審計 | user | Pipeline 外的角色不動 `state.md`；獨立判斷，直接交給 user |
 | 11 | user | 記住某件事 | （無） | 寫進角色記憶 |
 
 ## 查歷史

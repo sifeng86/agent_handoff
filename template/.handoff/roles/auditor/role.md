@@ -16,7 +16,7 @@
 
 **Inputs**: as above.
 
-**Outputs**: `docs/handoff/YYYY-MM-DD-audit-<topic>.md`, then hand off with `Relay-To: user`. An audit outside the `Pipeline` is a detour (PROTOCOL.md §6).
+**Outputs**: `docs/handoff/YYYY-MM-DD-audit-<topic>.md`, then hand off with `Relay-To: user`. An audit outside the `Pipeline` does not touch `state.md` (PROTOCOL.md §6).
 
 **Done when**: the report covers the requested scope and states what was not examined.
 

@@ -7,9 +7,12 @@ User's latest instruction > `.handoff/roles/<role>/role.md` > repo `AGENTS.md` /
 
 This protocol replaces any global state-relay rule: use `.handoff/state.md`, never create `.agent-state.md`. If a legacy `.agent-state.md` exists, migrate its useful content into `.handoff/state.md` and retire it.
 
-**Handoff files are always writable.** Every role, including read-only ones, may update `.handoff/state.md`, write its own output file, update memory files (§8), and commit and push those. A role's read-only restriction applies to everything else.
+**Handoff files are always writable in task mode (§2).** Every role, including read-only ones, may update `.handoff/state.md`, write its own output file, update memory files (§8), and commit and push those. A role's read-only restriction applies to everything else.
 
 ## 2. Session Start
+0. Determine the mode:
+   - **Task mode**: the user assigns a role ("you are implementer"), or says "resume" / "接手". Follow the steps below.
+   - **Conversation mode** (default): anything else, such as questions, discussion, or unrelated topics. Read files as needed, but write nothing and never touch `state.md`. Exceptions, only when the user explicitly asks: "remember ..." goes to a memory file (§8); "change file X" changes that file. If the discussion reaches something worth recording, offer to record it; do not write it yourself.
 1. `git pull --ff-only`. If it fails, stop and report; do not force anything.
 2. Determine your role: the user says it, or take `Current` in `.handoff/state.md`. If neither is clear, ask.
 3. Read, in order (the `auditor` role defines its own order):
@@ -69,7 +72,7 @@ If your inputs (plan, spec, review findings, user instruction) are wrong, contra
 
 Do not rewrite another role's artifact or relax its criteria yourself. Continue only work that does not depend on the answer.
 
-A role the user invokes outside the `Pipeline` (e.g. an ad-hoc `auditor`) is also a detour: set `Return-To` to the current `Step`, and on completion hand to `user`, who decides how to continue.
+A role the user invokes outside the `Pipeline` (e.g. an ad-hoc `auditor`) is not a detour and does not touch `state.md`: it writes, commits, and pushes only its own output, then reports to the user, who decides whether to bring the findings into the `Pipeline`.
 
 ## 7. Stop and Hand to `user`
 Use `Relay-To: user` and `Status: blocked` when:
