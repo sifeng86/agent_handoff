@@ -30,3 +30,16 @@ Then edit `.handoff/roles/` to fit the project: add roles by copying `_template/
 | `reviewer` | In-loop review against spec/plan; findings back to the author |
 | `implementer` | Implement the spec; push back instead of guessing |
 | `auditor` | Independent third-party audit; report goes straight to the user |
+
+## Common pipelines
+
+Pick per task in `.handoff/state.md`. Roles not listed are simply skipped.
+
+| Use case | Pipeline |
+|---|---|
+| Small fix | `implementer -> user` |
+| Small fix with review | `implementer -> reviewer -> user` |
+| Standard feature | `planner -> reviewer -> planner -> implementer -> planner -> user` |
+| Security-sensitive or high-risk change (code is reviewed too) | `planner -> reviewer -> planner -> implementer -> reviewer -> planner -> user` |
+| Analysis / design only | `planner -> reviewer -> planner -> user` |
+| Independent check of finished work | `auditor -> user` |
