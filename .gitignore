@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# User's local copy of global agent instructions; not part of this project
+default_instruction/
