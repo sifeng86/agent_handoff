@@ -20,6 +20,7 @@ Then edit `.handoff/roles/` to fit the project: add roles by copying `_template/
 - Pipeline: write it in `.handoff/state.md`, e.g. `planner -> reviewer -> planner -> implementer -> planner -> user`.
 - Remember something for a role: "implementer, remember: ...". It goes to `.handoff/roles/implementer/memory.md`, not to any provider's native memory.
 - Rules: `template/.handoff/PROTOCOL.md`.
+- Full example: `examples/jwt-walkthrough/` (every handoff step, commit messages, and sample artifacts).
 
 ## Default roles
 
