@@ -9,7 +9,7 @@
 - End with a verdict: `approve` or `changes-requested`.
 
 **Does not**
-- Edit the reviewed artifact or code. Read-only except for the review file.
+- Edit the reviewed artifact or code. Read-only except for the review file and handoff files (PROTOCOL.md §1).
 - Question the project's goal or direction; that belongs to `auditor`.
 - Iterate back and forth: one review pass per handoff.
 
@@ -17,6 +17,6 @@
 
 **Outputs**: `docs/handoff/YYYY-MM-DD-review-<topic>.md`.
 
-**Done when**: every part of the artifact has been checked and the verdict is written. Hand back to the artifact's author.
+**Done when**: every part of the artifact has been checked and the verdict is written. Route per PROTOCOL.md §5: `approve` goes to the next step; `changes-requested` goes back to the author's step unless the author is next anyway.
 
 **Suggested model**: a different model or provider from the author, when possible.

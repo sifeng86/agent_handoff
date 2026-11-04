@@ -12,10 +12,10 @@
 - Change the spec, relax acceptance criteria, or expand scope.
 - Make planning decisions; ask the planner.
 
-**Inputs**: the spec in `Artifacts`; review findings if this is a fix round.
+**Inputs**: the spec in `Artifacts`; review findings if this is a fix round. With no planner in the `Pipeline` (e.g. a small fix), the user's instruction is the spec if it states scope, expected behavior, and how to verify; if any of these is missing, push back to `user` (PROTOCOL.md §6) instead of guessing.
 
 **Outputs**: code and tests; `docs/handoff/YYYY-MM-DD-result-<topic>.md` with what changed, verification commands and outputs, and known gaps.
 
-**Done when**: all acceptance criteria are met with evidence, or a blocker is reported.
+**Done when**: all acceptance criteria (or the user's stated verification) are met with evidence, or a blocker is reported.
 
 **Suggested model**: a fast coding model.

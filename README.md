@@ -4,15 +4,36 @@ A git-only handoff template for sequential work across agents (Claude, Codex, ..
 
 ## Install into a project
 
+First install only. It refuses to run if `.handoff/` already exists, so it never overwrites state, memory, or customized roles.
+
 ```bash
-cp -r template/.handoff template/docs <project>/
-# If <project> has no AGENTS.md / CLAUDE.md:
-cp template/AGENTS.md template/CLAUDE.md <project>/
-# Otherwise append the pointer line from template/AGENTS.md to the existing AGENTS.md,
-# and make sure CLAUDE.md contains "@AGENTS.md" (or the same pointer line).
+P=<project>
+if [ -e "$P/.handoff" ]; then echo "already installed: see Update"; else
+  cp -r template/.handoff "$P/" && mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"
+  # AGENTS.md: copy, or append the whole handoff block (pointer + state-relay override).
+  if [ -e "$P/AGENTS.md" ]; then
+    { echo; sed -n '/<!-- handoff:begin -->/,/<!-- handoff:end -->/p' template/AGENTS.md; } >> "$P/AGENTS.md"
+  else cp template/AGENTS.md "$P/"; fi
+  # CLAUDE.md: copy, or import AGENTS.md.
+  if [ -e "$P/CLAUDE.md" ]; then
+    grep -qxF '@AGENTS.md' "$P/CLAUDE.md" || echo '@AGENTS.md' >> "$P/CLAUDE.md"
+  else cp template/CLAUDE.md "$P/"; fi
+fi
 ```
 
+If an existing `CLAUDE.md` repeats rules already in `AGENTS.md`, remove the duplicates after importing.
+
 Then edit `.handoff/roles/` to fit the project: add roles by copying `_template/`, remove the ones you don't use.
+
+### Update an installed project
+
+Only `PROTOCOL.md` is template-owned; everything else in `.handoff/` belongs to the project.
+
+```bash
+cp template/.handoff/PROTOCOL.md "$P/.handoff/"
+diff -ru template/.handoff/roles "$P/.handoff/roles"   # merge role changes by hand
+diff template/.handoff/state.md "$P/.handoff/state.md"  # add any new fields by hand
+```
 
 ## Use
 
@@ -34,6 +55,8 @@ Then edit `.handoff/roles/` to fit the project: add roles by copying `_template/
 ## Common pipelines
 
 Pick per task in `.handoff/state.md`. Roles not listed are simply skipped.
+
+Without a planner (small fixes), the user's instruction is the spec: it must state scope, expected behavior, and how to verify, or the implementer pushes back to `user`.
 
 | Use case | Pipeline |
 |---|---|

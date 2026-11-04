@@ -12,7 +12,9 @@ Each step shows `.handoff/state.md` after the step and the commit that carries i
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 1
 Current: planner
+Return-To: 
 Next action: Write a plan for JWT auth. Scope: login endpoint + auth middleware. Out of scope: refresh tokens.
 Completed:
 Remaining: plan, review, spec, implement, verify
@@ -38,7 +40,9 @@ Relay-Doc: .handoff/state.md
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 2
 Current: reviewer
+Return-To: 
 Next action: Review docs/handoff/2026-11-04-plan-jwt.md against the goal in Task and the current code in src/api/.
 Completed: plan
 Remaining: review, spec, implement, verify
@@ -52,7 +56,6 @@ docs(plan): JWT auth plan
 
 Relay-To: reviewer
 Relay-Doc: docs/handoff/2026-11-04-plan-jwt.md
-
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
@@ -66,7 +69,9 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 3
 Current: planner
+Return-To: 
 Next action: Decide on each finding in docs/handoff/2026-11-04-review-plan-jwt.md, then write the spec.
 Completed: plan, review (changes-requested)
 Remaining: spec, implement, verify
@@ -92,9 +97,11 @@ Relay-Doc: docs/handoff/2026-11-04-review-plan-jwt.md
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 4
 Current: implementer
+Return-To: 
 Next action: Check docs/handoff/2026-11-04-spec-jwt.md against the code, then implement step S1.
-Completed: plan, review, spec (review findings resolved in spec §6)
+Completed: plan, review, spec (review findings resolved in spec §7)
 Remaining: implement S1-S3, verify
 Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4
 Artifacts: docs/handoff/2026-11-04-spec-jwt.md
@@ -106,7 +113,6 @@ docs(spec): JWT auth spec, review findings resolved
 
 Relay-To: implementer
 Relay-Doc: docs/handoff/2026-11-04-spec-jwt.md
-
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
@@ -120,8 +126,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Status: in-progress
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 4
 Current: implementer
-Next action: Implement S2 (auth middleware) per spec §3.2.
+Return-To: 
+Next action: Implement S2 (auth middleware) per spec §3 S2.
 Completed: plan, review, spec, S1 (token issue on POST /login, tests pass)
 Remaining: S2, S3, verify
 Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4
@@ -146,8 +154,10 @@ Claude A 的 quota 用完。在同一台（或任何一台）主機用 Claude B 
 Status: in-progress
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 4
 Current: implementer
-Next action: Finish S2: apply middleware to routes listed in spec §3.2; expired-token test still missing.
+Return-To: 
+Next action: Finish S2: apply middleware to routes listed in spec §3 S2; expired-token test still missing.
 Completed: plan, review, spec, S1, S2 middleware core
 Remaining: S2 route wiring + expired-token test, S3, verify
 Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4
@@ -165,13 +175,15 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 
 ## 06 — implementer pushes back
 
-Spec 要求套用到 `/health`，但它被外部監控呼叫、沒辦法帶 token。不自己猜，退回給 planner。
+Spec 要求套用到 `/api/health`，但它被外部監控呼叫、沒辦法帶 token。不自己猜，退回給 planner（detour：`Return-To: 4`，`Step` 不變）。
 
 ```
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 4
 Current: planner
+Return-To: 4
 Next action: Answer docs/handoff/2026-11-04-question-jwt-health.md, then hand back to implementer.
 Completed: plan, review, spec, S1, S2 except route wiring
 Remaining: answer question, S2 route wiring, S3, verify
@@ -181,11 +193,10 @@ Last agent: claude-sonnet-5-5@claude-b/host-3
 ```
 
 ```
-docs(question): /health cannot carry a token
+docs(question): /api/health cannot carry a token
 
 Relay-To: planner
 Relay-Doc: docs/handoff/2026-11-04-question-jwt-health.md
-
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
@@ -193,27 +204,28 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 
 ## 07 — planner answers
 
-修訂 spec（§3.2 排除 `/health`），回答寫在問題文件最後。Pipeline 位置不變，回到 implementer。
+修訂 spec（§3 S2 排除 `/api/health`），回答寫在問題文件最後。這是 detour：清掉 `Return-To`，回到 Step 4 的 implementer，`Step` 不推進。
 
 ```
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 4
 Current: implementer
-Next action: Finish S2 per revised spec §3.2 (/health excluded), then S3.
+Return-To: 
+Next action: Finish S2 per revised spec §3 S2 (/api/health excluded), then S3.
 Completed: plan, review, spec (rev 2), S1, S2 except route wiring
 Remaining: S2 route wiring, S3, verify
-Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /health stays public
+Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /api/health stays public
 Artifacts: docs/handoff/2026-11-04-spec-jwt.md, docs/handoff/2026-11-04-question-jwt-health.md
 Last agent: claude-opus-5-5@claude-a/host-1
 ```
 
 ```
-docs(spec): exclude /health from JWT middleware
+docs(spec): exclude /api/health from JWT middleware
 
 Relay-To: implementer
 Relay-Doc: docs/handoff/2026-11-04-question-jwt-health.md
-
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
@@ -225,11 +237,13 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Status: handoff
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 5
 Current: planner
+Return-To: 
 Next action: Verify docs/handoff/2026-11-04-result-jwt.md against spec §5 acceptance criteria.
 Completed: plan, review, spec (rev 2), S1, S2, S3
 Remaining: verify
-Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /health stays public
+Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /api/health stays public
 Artifacts: docs/handoff/2026-11-04-spec-jwt.md, docs/handoff/2026-11-04-result-jwt.md
 Last agent: claude-sonnet-5-5@claude-b/host-3
 ```
@@ -239,7 +253,6 @@ feat(auth): protect API routes with JWT middleware (S2, S3)
 
 Relay-To: planner
 Relay-Doc: docs/handoff/2026-11-04-result-jwt.md
-
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
@@ -253,11 +266,13 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 Status: done
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 6
 Current: user
+Return-To: 
 Next action: Decide whether to run an audit or close the task.
 Completed: plan, review, spec (rev 2), implement, verify (pass)
 Remaining:
-Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /health stays public
+Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /api/health stays public
 Artifacts: docs/handoff/2026-11-04-verify-jwt.md
 Last agent: claude-opus-5-5@claude-a/host-1
 ```
@@ -267,7 +282,6 @@ docs(verify): JWT auth verified against spec §5
 
 Relay-To: user
 Relay-Doc: docs/handoff/2026-11-04-verify-jwt.md
-
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
@@ -275,17 +289,19 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 ## 10 — auditor (optional)
 
-使用者說：「你是 auditor，審 JWT auth 這個任務。」auditor 先只看目標、程式碼和產出，之後才讀 state 和 review。
+使用者說：「你是 auditor，審 JWT auth 這個任務。」Pipeline 外的角色是 detour：開工時設 `Current: auditor`、`Return-To: 6`；完成後交給 user 並清掉 `Return-To`。auditor 先只看目標、程式碼和產出，之後才讀 state 和 review。
 
 ```
 Status: done
 Task: Add JWT auth to the API
 Pipeline: planner -> reviewer -> planner -> implementer -> planner -> user
+Step: 6
 Current: user
+Return-To: 
 Next action: Decide which findings in docs/handoff/2026-11-04-audit-jwt.md to adopt.
 Completed: plan, review, spec (rev 2), implement, verify (pass), audit
 Remaining:
-Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /health stays public
+Decisions: HS256, secret from JWT_SECRET; token TTL 15 min; 401 body format per spec §4; /api/health stays public
 Artifacts: docs/handoff/2026-11-04-verify-jwt.md, docs/handoff/2026-11-04-audit-jwt.md
 Last agent: gpt-6-astra@codex/host-2
 ```
