@@ -29,7 +29,7 @@ In task mode, every role, including read-only ones, may update `state.md`, write
 5. **Check your inputs** (plan, spec, findings, user instruction): clear, consistent with each other and with the code, and enough to finish without guessing? If not, ask (§0) instead of starting.
 6. Start from `Next action`. Do not redo anything in `Completed`.
 
-**The user assigns you directly** (even if `Relay-To` names someone else or `user`): the user's word wins. Add the instruction to `Decisions` (`- YYYY-MM-DD user: ...`), set `Relay-To` to yourself, and edit the `Pipeline` checklist if the route changed.
+**The user assigns you directly** (even if `Relay-To` names someone else or `user`, and whether or not your role is in the `Pipeline`): decide from the user's words whether you are to **take over the task** or only **give a one-off report or opinion**; if unclear, ask. Taking over: the user's word wins. Add the instruction to `Decisions` (`- YYYY-MM-DD user: ...`), set `Relay-To` to yourself, and add or edit `Pipeline` items if the route changed. One-off report: see §6, last paragraph.
 
 **A new task while one is unfinished** (`Status` is not `idle` or `done`): ask the user whether to park the current card (move it to `docs/handoff/YYYY-MM-DD-parked-<topic>.md`) or defer the new task.
 
@@ -63,7 +63,7 @@ When your part is done, or you need an answer from someone else:
 
 **Asking is a handoff.** Write the question in a dated file under the artifacts directory and hand off to the role you ask. That role answers (revising its own artifact if needed) and hands back. Before handing off, finish the work that does not depend on the answer. Do not rewrite another role's artifact or relax its criteria yourself.
 
-**Only the baton holder changes `Relay-To`**: the role it names, or a role the user just assigned. A role the user invokes outside the `Pipeline` (e.g. an ad-hoc `auditor`) does not touch `state.md`: it commits and pushes only its own output and reports to the user.
+**Only the baton holder changes `Relay-To`**: the role it names, or a role the user just assigned. A role the user asks only for a one-off report or opinion (e.g. an ad-hoc audit) does not hold the baton and does not touch `state.md`: it commits and pushes only its own output and reports to the user.
 
 ## 7. Memory
 Provider-native memory (Claude Code auto-memory, `~/.claude/projects/*/memory/`, Codex memories, etc.) must **not** hold anything about this project. It is tied to one machine/account and the next agent cannot see it. Repo memory files are the only project memory.
@@ -94,9 +94,9 @@ me=<role>
 while :; do
   git fetch -q || { echo "handoff-wait: fetch failed" >&2; exit 1; }
   s=$(git show '@{u}:.handoff/state.md') || { echo "handoff-wait: no upstream state" >&2; exit 1; }
+  [ -f .git/HANDOFF_PAUSE ] && { echo "handoff-wait: paused" >&2; exit 2; }
   printf '%s\n' "$s" | grep -qx 'Status: handoff' &&
     printf '%s\n' "$s" | grep -qx "Relay-To: $me" && exit 0
-  [ -f .git/HANDOFF_PAUSE ] && { echo "handoff-wait: paused" >&2; exit 2; }
   sleep 60
 done
 ```

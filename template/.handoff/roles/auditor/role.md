@@ -16,7 +16,7 @@
 
 **Inputs**: as above.
 
-**Outputs**: `docs/handoff/YYYY-MM-DD-audit-<topic>.md`, then report to the user. In the `Pipeline`: you hold the baton; hand off per PROTOCOL.md §6, normally to `user`. Ad hoc (not in the `Pipeline`): commit only the report and do not touch `state.md`.
+**Outputs**: `docs/handoff/YYYY-MM-DD-audit-<topic>.md`, then report to the user. Taking over the task (in the `Pipeline`, or assigned by the user to take over): you hold the baton; hand off per PROTOCOL.md §6, normally to `user`. One-off audit: commit only the report and do not touch `state.md` (PROTOCOL.md §3, §6).
 
 **Done when**: the report covers the requested scope and states what was not examined.
 

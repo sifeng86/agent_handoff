@@ -21,22 +21,31 @@ Rules: [`template/.handoff/PROTOCOL.md`](template/.handoff/PROTOCOL.md). Full ex
 
 ## Install into a project
 
-First install only. It refuses to run if `.handoff/` already exists, so it never overwrites state, memory, or customized roles.
+First install only. It checks every target before writing and stops at the first failure, so it never overwrites state, memory, or customized roles. It refuses to run if `.handoff/` already exists.
 
 ```bash
-P=<project>
-if [ -e "$P/.handoff" ]; then echo "already installed: see Update"; else
-  cp -r template/.handoff "$P/" && mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"
+P=<project>; T=template   # run from this repo's root
+(
+  fail() { echo "install stopped: $*" >&2; exit 1; }
+  # Check every target before writing anything.
+  { [ -e "$P/.handoff" ] || [ -L "$P/.handoff" ]; } && fail "$P/.handoff already exists (see Update)"
+  for d in "$P/docs" "$P/docs/handoff"; do
+    { [ -e "$d" ] || [ -L "$d" ]; } && [ ! -d "$d" ] && fail "$d exists but is not a directory"
+  done
+  cp -r "$T/.handoff" "$P/" || fail "copying .handoff; remove $P/.handoff and rerun"
+  { mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"; } || fail "creating docs/handoff; remove $P/.handoff and rerun"
   # AGENTS.md: copy, or append the whole handoff block (hard rules).
   if [ -e "$P/AGENTS.md" ]; then
-    { echo; sed -n '/<!-- handoff:begin -->/,/<!-- handoff:end -->/p' template/AGENTS.md; } >> "$P/AGENTS.md"
-  else cp template/AGENTS.md "$P/"; fi
-  # CLAUDE.md: copy, or import AGENTS.md (skipped when either file is a symlink, to avoid a self-import).
+    { echo; sed -n '/<!-- handoff:begin -->/,/<!-- handoff:end -->/p' "$T/AGENTS.md"; } >> "$P/AGENTS.md" || fail "appending to AGENTS.md"
+  else cp "$T/AGENTS.md" "$P/" || fail "copying AGENTS.md"; fi
+  # CLAUDE.md: copy, or import AGENTS.md on its own line (skipped when either file is a symlink, to avoid a self-import).
   if [ -L "$P/AGENTS.md" ] || [ -L "$P/CLAUDE.md" ]; then echo "symlinked AGENTS.md/CLAUDE.md: check by hand that Claude sees the handoff block"
   elif [ -e "$P/CLAUDE.md" ]; then
-    grep -qxF '@AGENTS.md' "$P/CLAUDE.md" || echo '@AGENTS.md' >> "$P/CLAUDE.md"
-  else cp template/CLAUDE.md "$P/"; fi
-fi
+    grep -qxF '@AGENTS.md' "$P/CLAUDE.md" || printf '\n@AGENTS.md\n' >> "$P/CLAUDE.md" || fail "appending to CLAUDE.md"
+  else cp "$T/CLAUDE.md" "$P/" || fail "copying CLAUDE.md"; fi
+  grep -q 'handoff:begin' "$P/AGENTS.md" || fail "handoff block missing from AGENTS.md"
+  echo "installed: review, then commit and push (below)"
+)
 ```
 
 Then:
@@ -78,7 +87,7 @@ When an agent hands a problem to you (`Relay-To: user`), decide and tell any rol
 | `planner` | Plan, spec, verify results; answers other roles' questions |
 | `reviewer` | In-loop review against spec/plan; changes go back to the author |
 | `implementer` | Implement the spec; checks it first and asks instead of guessing |
-| `auditor` | Independent third-party audit; report goes to the user. In the `Pipeline` it holds the baton; ad hoc it only delivers a report |
+| `auditor` | Independent third-party audit; report goes to the user. When it takes over the task it holds the baton; a one-off audit only delivers a report |
 
 ## Common pipelines
 

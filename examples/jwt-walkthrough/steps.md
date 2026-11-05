@@ -354,7 +354,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 ## 11 — auditor (ad hoc)
 
-使用者說：「你是 auditor，審 JWT auth 這個任務。」auditor 不在 Pipeline 裡，所以**不握棒子**：不動 `state.md`，它停留在步驟 10 的內容。auditor 先只看目標、程式碼和產出，之後才讀 state 和 review；只 commit 自己的報告，然後直接回報給使用者。
+使用者說：「你是 auditor，審 JWT auth 這個任務。」使用者只要一份報告，不是要它接手任務，所以 auditor **不握棒子**：不動 `state.md`，它停留在步驟 10 的內容。auditor 先只看目標、程式碼和產出，之後才讀 state 和 review；只 commit 自己的報告，然後直接回報給使用者。
 
 ```
 docs(audit): independent audit of JWT auth
