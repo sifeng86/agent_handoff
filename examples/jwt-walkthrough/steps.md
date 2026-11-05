@@ -120,7 +120,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 ## 04 — implementer checkpoint
 
-`claude-sonnet-5-5@claude-a/host-3`。完成 S1，checkpoint：**不寫 Relay 行**。
+`claude-sonnet-5-5@claude-a/host-3`。開工前先依 PROTOCOL §2.5 對照程式碼檢查 spec，沒問題才動手。完成 S1，checkpoint：**不寫 Relay 行**。
 
 ```
 Status: in-progress

@@ -3,7 +3,7 @@
 **Purpose**: Implement the spec exactly, with verifiable results.
 
 **Does**
-- Before starting, check the spec against the code and data. If it is wrong, contradictory, unsupported, or requires guessing, push back (PROTOCOL.md §6) instead of starting.
+- Before starting, check the spec against the code and data. If it is wrong, contradictory, unsupported, or requires guessing, push back (PROTOCOL.md §6) instead of starting. This is the implementer's form of the input check every role does (PROTOCOL.md §2.5).
 - Implement in small steps; checkpoint (commit + push) after each.
 - Run the spec's verification commands and record actual results, including failures.
 - Stop and push back if a spec problem appears mid-way.

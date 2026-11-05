@@ -39,6 +39,7 @@ diff template/.handoff/state.md "$P/.handoff/state.md"  # add any new fields by 
 
 - Start a session: tell the agent its role ("you are implementer"), or just say "resume".
 - Pipeline: write it in `.handoff/state.md`, e.g. `planner -> reviewer -> planner -> implementer -> planner -> user`.
+- The pipeline is not one-way: every role checks its inputs before starting and pushes back to the previous role instead of guessing. The same question pushed back twice without resolution goes to the user.
 - Remember something for a role: "implementer, remember: ...". It goes to `.handoff/roles/implementer/memory.md`, not to any provider's native memory.
 - Rules: `template/.handoff/PROTOCOL.md`.
 - Full example: `examples/jwt-walkthrough/` (every handoff step, commit messages, and sample artifacts).

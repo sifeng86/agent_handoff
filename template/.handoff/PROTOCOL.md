@@ -20,7 +20,8 @@ This protocol replaces any global state-relay rule: use `.handoff/state.md`, nev
    2. `.handoff/roles/<role>/role.md` and `memory.md`
    3. `.handoff/state.md`, then files listed in its `Artifacts`
 4. Run `git status -s` and `git log --oneline -5` to confirm the state matches `state.md`.
-5. Start from `Next action`. Do not redo anything listed in `Completed`.
+5. **Check your inputs before doing the work.** Every role, on taking the baton: are the inputs (plan, spec, findings, user instruction) clear, consistent with each other and with the code, and sufficient to finish without guessing? If not, push back (§6) instead of starting.
+6. Start from `Next action`. Do not redo anything listed in `Completed`.
 
 ## 3. State File (`.handoff/state.md`)
 The baton and the only source of truth for who moves next. Overwrite it freely; git history (`git log -p .handoff/state.md`) is the handoff log. Keep it under 30 lines.
@@ -68,7 +69,8 @@ If your inputs (plan, spec, review findings, user instruction) are wrong, contra
 1. Stop that part. Write the questions in a dated file under the artifacts directory.
 2. Set `Status: handoff`, `Return-To: <current Step>`, `Current: <role that handed to you>` (`user` if the user started you). Keep `Step` unchanged.
 3. The asked role answers (revising its own artifact if needed), then sets `Current` to the role at `Return-To`, clears `Return-To`, and hands off. A detour never advances `Step`.
-4. During a detour, further questions go to `user` with `Status: blocked`; keep `Return-To`. The user answers and names who continues.
+4. During a detour, further questions go to `user` with `Status: blocked`; keep `Return-To`. The user answers and names who continues. Push back only one step: the user, who knows the whole picture, routes problems that started further upstream.
+5. If the same question has been pushed back twice and is still unresolved, do not push back a third time: hand to `user` with `Status: blocked`, keeping `Return-To`.
 
 Do not rewrite another role's artifact or relax its criteria yourself. Continue only work that does not depend on the answer.
 
