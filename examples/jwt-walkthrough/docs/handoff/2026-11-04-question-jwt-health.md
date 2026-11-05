@@ -11,5 +11,8 @@ Spec §3 S2 applies middleware to all `/api/*` routes. `/api/health` is called b
 1. Exclude `/api/health` from the middleware.
 2. Give the monitor a long-lived token.
 
-## Answer (planner)
-Option 1. `/api/health` returns no sensitive data. Spec revised to rev 2, §3 S2.
+## Planner
+Making an endpoint public is a security/scope decision: escalated to user.
+
+## Answer (user, recorded by planner)
+Option 1: keep `/api/health` public; it returns no sensitive data. Spec revised to rev 2, §3 S2.

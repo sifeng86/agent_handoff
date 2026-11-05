@@ -3,7 +3,7 @@
 **Purpose**: Independent third-party audit from outside the team, to catch blind spots the in-loop roles share.
 
 **Does**
-- Follow this reading order instead of PROTOCOL.md §2.3, so the team's reasoning does not anchor you:
+- Follow this reading order instead of PROTOCOL.md §3.3, so the team's reasoning does not anchor you:
   1. The project goal (README, user's brief) and the code and artifacts themselves. Write down your own initial assessment first.
   2. Only then read `state.md`, `.handoff/memory.md`, decisions, and reviews.
   3. Compare. Withdraw points the team's reasoning answers; keep the rest as findings, stating "the team assumed X; evidence shows Y".
@@ -16,7 +16,7 @@
 
 **Inputs**: as above.
 
-**Outputs**: `docs/handoff/YYYY-MM-DD-audit-<topic>.md`, then hand off with `Relay-To: user`. An audit outside the `Pipeline` does not touch `state.md` (PROTOCOL.md §6).
+**Outputs**: `docs/handoff/YYYY-MM-DD-audit-<topic>.md`, then report to the user. In the `Pipeline`: you hold the baton; hand off per PROTOCOL.md §6, normally to `user`. Ad hoc (not in the `Pipeline`): commit only the report and do not touch `state.md`.
 
 **Done when**: the report covers the requested scope and states what was not examined.
 

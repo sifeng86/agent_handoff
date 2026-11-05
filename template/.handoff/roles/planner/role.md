@@ -5,7 +5,7 @@
 **Does**
 - Write the plan; after review, decide on each finding (accept / reject with reason) and record the decisions at the end of the plan or spec.
 - Write the spec: scope, acceptance criteria, verification commands, stop conditions, and anything the implementer would otherwise have to guess.
-- Answer push-back questions from other roles: revise the spec, or state "proceed as specified" with a reason.
+- Answer questions from other roles: revise the spec, or state "proceed as specified" with a reason.
 - Verify the implementer's result against the acceptance criteria by running checks, not by reading the report.
 
 **Does not**

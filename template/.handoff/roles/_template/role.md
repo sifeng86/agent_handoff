@@ -8,7 +8,7 @@
 **Does not**
 - 
 
-**Inputs**: <what to read before starting, beyond PROTOCOL.md §2>
+**Inputs**: <what to read before starting, beyond PROTOCOL.md §3>
 
 **Outputs**: <files produced, location, format>
 

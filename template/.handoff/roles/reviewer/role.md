@@ -17,6 +17,6 @@
 
 **Outputs**: `docs/handoff/YYYY-MM-DD-review-<topic>.md`.
 
-**Done when**: every part of the artifact has been checked and the verdict is written. Route per PROTOCOL.md §5: `approve` goes to the next step; `changes-requested` goes back to the author's step unless the author is next anyway.
+**Done when**: every part of the artifact has been checked and the verdict is written. Hand off per PROTOCOL.md §6: `changes-requested` usually goes to the author; `approve` goes to the next checklist item.
 
 **Suggested model**: a different model or provider from the author, when possible.

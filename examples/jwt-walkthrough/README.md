@@ -19,24 +19,25 @@
 
 ## 流程總覽
 
-| 步驟 | 誰 | 做什麼 | Relay-To | 示範重點 |
+| 步驟 | 誰 | 做什麼 | 交給（`Relay-To`） | 示範重點 |
 |---|---|---|---|---|
-| 00 | user | 開任務、寫 Pipeline | — | 任務起點 |
-| 01 | planner | 寫 plan | reviewer | 一般交棒 |
+| 00 | user | 開任務、寫 Pipeline checklist | planner | 「開任務」屬於任務模式 |
+| 01 | planner | 寫 plan | reviewer | 一般交棒：下一個沒打勾的項目 |
 | 02 | reviewer | 審 plan | planner | 換 provider、換機器 |
 | 03 | planner | 處理意見、寫 spec | implementer | 逐條處理審查意見 |
-| 04 | implementer | 實作第一步 | （無） | checkpoint 不寫 Relay |
-| 05 | implementer | 換帳號接手 | （無） | quota 用完，同一角色換人，不算交棒 |
-| 06 | implementer | 發現 spec 有問題 | planner | 退回（detour），不自己猜 |
-| 07 | planner | 回答問題 | implementer | detour：回到 `Return-To`，`Step` 不推進 |
-| 08 | implementer | 完成實作 | planner | 交出結果與證據 |
-| 09 | planner | 驗收 | user | 自己跑驗證，不只看報告 |
-| 10 | auditor | 第三方審計 | user | Pipeline 外的角色不動 `state.md`；獨立判斷，直接交給 user |
-| 11 | user | 記住某件事 | （無） | 寫進角色記憶 |
+| 04 | implementer | 檢查 spec、實作第一步 | （不變） | 開工前檢查輸入；checkpoint |
+| 05 | implementer | 換帳號接手 | （不變） | quota 用完：同一角色換人，不算交棒；處理沒 commit 的修改 |
+| 06 | implementer | 發現 spec 有問題 | planner | 問負責的人，不自己猜 |
+| 07 | planner | 判斷這是使用者該做的決定 | user | 安全/範圍的取捨交給 user |
+| 08 | user → planner | 使用者直接找 planner 做決定 | implementer | user 不受 Pipeline 限制；決定記進 `Decisions` |
+| 09 | implementer | 完成實作 | planner | 交出結果與證據 |
+| 10 | planner | 驗收 | user | 自己跑驗證；`Status: done` |
+| 11 | auditor | 臨時審計 | （不動 `state.md`） | Pipeline 外的角色不握棒子 |
+| 12 | user | 記住某件事 | （不動 `state.md`） | 寫進角色記憶 |
 
 ## 查歷史
 
 ```bash
 git log -p .handoff/state.md                                   # 每一棒的 state
-git log --format='%h %ad %(trailers:key=Relay-To,valueonly)' --date=short  # 誰交給誰
+git log --format='%h %ad %(trailers:key=Relay-To,valueonly)' --date=short  # 誰交給誰（trailer 只是紀錄，以 state.md 為準）
 ```

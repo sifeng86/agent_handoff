@@ -7,8 +7,9 @@ This repo does not install its own template: progress is tracked with the global
 ## Project decisions
 <!-- Rules that constrain future work. One line each, max 20 lines. Rewrite or delete superseded ones; rationale stays in git history. -->
 - Git + Markdown only. No CLI, scripts to install, or other tooling.
-- Sequential work only: one role works at a time. No parallel workstreams.
-- `state.md` is the single source of truth for who moves next (`Step` / `Return-To` cursor). Commit trailers are logs only.
+- One active agent at a time (plus its own subagents). Don't add machinery to guard against concurrent agents.
+- Ask, don't guess: conflicts, ambiguity, and uncertainty go to the responsible role, else the user. The user may hand the baton to any role at any time.
+- `state.md` is the single source of truth: `Relay-To` says whose turn it is, `Pipeline` is an advisory checklist. Commit trailers are logs only. No cursors or transition tables: agents judge where to hand off.
 - Roles are folders (`role.md` + `memory.md`). Roles and pipelines are chosen per project and per task; never hardcode them in PROTOCOL.
 - `reviewer` (in-loop, back to the author) and `auditor` (independent, reports to the user) are separate roles.
 - Provider-native memory never holds project content; repo memory files only.
