@@ -21,7 +21,9 @@ Rules: [`template/.handoff/PROTOCOL.md`](template/.handoff/PROTOCOL.md). Full ex
 
 ## Install into a project
 
-First install only. It checks every target before writing and stops at the first failure, so it never overwrites state, memory, or customized roles. It refuses to run if `.handoff/` already exists.
+First install only. Run it on a clean working tree. It checks every target before writing and stops at the first failure, so it never overwrites state, memory, or customized roles. It refuses to run if `.handoff/` already exists.
+
+If it stops after writing (e.g. disk full), undo the partial install and rerun: `rm -r "$P/.handoff"`, then `git -C "$P" status` and restore or delete what it changed (`git -C "$P" checkout -- AGENTS.md CLAUDE.md` for tracked files).
 
 ```bash
 P=<project>; T=template   # run from this repo's root
@@ -31,6 +33,10 @@ P=<project>; T=template   # run from this repo's root
   { [ -e "$P/.handoff" ] || [ -L "$P/.handoff" ]; } && fail "$P/.handoff already exists (see Update)"
   for d in "$P/docs" "$P/docs/handoff"; do
     { [ -e "$d" ] || [ -L "$d" ]; } && [ ! -d "$d" ] && fail "$d exists but is not a directory"
+  done
+  for f in "$P/AGENTS.md" "$P/CLAUDE.md"; do
+    { [ -e "$f" ] || [ -L "$f" ]; } && [ ! -f "$f" ] && fail "$f exists but is not a regular file"
+    [ -e "$f" ] && [ ! -w "$f" ] && fail "$f is not writable"
   done
   cp -r "$T/.handoff" "$P/" || fail "copying .handoff; remove $P/.handoff and rerun"
   { mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"; } || fail "creating docs/handoff; remove $P/.handoff and rerun"
