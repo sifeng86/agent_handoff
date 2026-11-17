@@ -31,9 +31,10 @@
 | 07 | planner | 判斷這是使用者該做的決定 | user | 安全/範圍的取捨交給 user |
 | 08 | user → planner | 使用者直接找 planner 做決定 | implementer | user 不受 Pipeline 限制；決定記進 `Decisions` |
 | 09 | implementer | 完成實作 | planner | 交出結果與證據 |
-| 10 | planner | 驗收 | user | 自己跑驗證；`Status: done` |
+| 10 | planner | 驗證 | user | 自己跑驗證；交給使用者驗收 |
 | 11 | auditor | 臨時審計 | （不動 `state.md`） | 只要報告、不接手任務的角色不握棒子 |
-| 12 | user | 記住某件事 | （不動 `state.md`） | 寫進角色記憶 |
+| 12 | user | 記住某件事 | （不動 `state.md`） | 寫進角色記憶；不等於指派角色 |
+| 13 | user | 驗收通過 | （清空） | 使用者驗收後才是 `Status: done` |
 
 ## 查歷史
 

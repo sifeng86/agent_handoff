@@ -61,7 +61,6 @@ docs(plan): JWT auth plan
 Next unchecked item is the plan review.
 
 Relay-To: reviewer
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -124,7 +123,6 @@ Artifacts: docs/handoff/2026-11-04-spec-jwt.md
 docs(spec): JWT auth spec, review findings resolved
 
 Relay-To: implementer
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -154,7 +152,6 @@ Artifacts: docs/handoff/2026-11-04-spec-jwt.md
 ```
 feat(auth): issue JWT on login (S1)
 
-Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -185,7 +182,6 @@ Artifacts: docs/handoff/2026-11-04-spec-jwt.md
 ```
 wip(auth): JWT middleware core (S2 partial)
 
-Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -218,7 +214,6 @@ docs(question): /api/health cannot carry a token
 Spec conflict with the uptime monitor; the planner owns the spec.
 
 Relay-To: planner
-Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -251,7 +246,6 @@ docs(question): escalate /api/health exposure to user
 Making an endpoint public is a security/scope decision.
 
 Relay-To: user
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -285,7 +279,6 @@ docs(spec): exclude /api/health from JWT middleware (rev 2)
 User chose option 1; back to the implementer to finish S2.
 
 Relay-To: implementer
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -315,17 +308,16 @@ Artifacts: docs/handoff/2026-11-04-spec-jwt.md, docs/handoff/2026-11-04-result-j
 feat(auth): protect API routes with JWT middleware (S2, S3)
 
 Relay-To: planner
-Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
 ---
 
 ## 10 — planner verifies
 
-自己重跑 spec §5 的驗證指令，不只看 result 報告。只剩最後的 `user` 項目，所以設為 `done`。
+自己重跑 spec §5 的驗證指令，不只看 result 報告。只剩最後的 `user` 項目，交給使用者驗收；`done` 要等使用者驗收後才設。
 
 ```
-Status: done
+Status: handoff
 Relay-To: user
 Task: Add JWT auth to the API
 Pipeline:
@@ -347,7 +339,6 @@ Artifacts: docs/handoff/2026-11-04-verify-jwt.md
 docs(verify): JWT auth verified against spec §5
 
 Relay-To: user
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 ```
 
 ---
@@ -367,12 +358,40 @@ docs(audit): independent audit of JWT auth
 ## 12 — user asks a role to remember something
 
 任何時候對任何 agent 說：「implementer 記住：測試一律用 `pnpm test -- --silent`。」
-即使是在對話模式，這也是使用者明確要求的寫入：agent 只寫 `.handoff/roles/implementer/memory.md`（見 [roles/implementer/memory.md](roles/implementer/memory.md)），**不動 `state.md`，不寫原生 memory**，寫完立即 commit 並 push：
+即使是在對話模式，這也是使用者明確要求的寫入。提到角色名稱**不等於指派角色**：agent 不會因此接手任務，只寫 `.handoff/roles/implementer/memory.md`（見 [roles/implementer/memory.md](roles/implementer/memory.md)），**不動 `state.md`，不寫原生 memory**，寫完立即 commit 並 push：
 
 ```
 docs(memory): implementer test command
 
-Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
 ```
 
 之後任何帳號、任何機器、任何 provider 的 implementer 開工時都會讀到。
+
+---
+
+## 13 — user accepts
+
+使用者對任一 agent 說：「驗收通過。」agent 勾掉 `user: accept`，設 `Status: done`，清空 `Relay-To`，commit 並 push。之後使用者開新任務時，就從步驟 00 開始。
+
+```
+Status: done
+Relay-To:
+Task: Add JWT auth to the API
+Pipeline:
+- [x] planner: plan
+- [x] reviewer: review plan
+- [x] planner: spec
+- [x] implementer: implement
+- [x] planner: verify
+- [x] user: accept
+Next action:
+Completed: plan, review, spec (rev 2), implement, verify (pass), accepted
+Decisions:
+- HS256, secret from JWT_SECRET; token TTL 15 min; 401 body per spec §4
+- 2026-11-04 user: keep /api/health public (option 1)
+Artifacts: docs/handoff/2026-11-04-verify-jwt.md
+```
+
+```
+chore(handoff): close task JWT auth (accepted)
+```

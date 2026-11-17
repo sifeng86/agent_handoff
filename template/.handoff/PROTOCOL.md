@@ -15,7 +15,7 @@ This protocol replaces any global state-relay rule: use `.handoff/state.md`, nev
 In task mode, every role, including read-only ones, may update `state.md`, write its own output and memory files (§7), and commit and push them. A role's read-only restriction applies to everything else.
 
 ## 2. Modes
-- **Conversation mode** (default): questions, discussion, unrelated topics. Read files as needed, but write nothing. Exceptions, only when the user explicitly asks: "remember ..." goes to a memory file (§7); "change file X" changes that file. Neither touches `state.md`. If something is worth recording, offer to record it.
+- **Conversation mode** (default): questions, discussion, unrelated topics. Read files as needed, but write nothing. Exceptions, only when the user explicitly asks: "remember ..." goes to a memory file (§7), even when it names a role ("implementer, remember: ..."): it does not assign the role or start a task; "change file X" changes that file. Neither touches `state.md`. If something is worth recording, offer to record it.
 - **Task mode**: the user assigns a role ("you are implementer"), says "resume" / "接手", or opens a task ("start task X"). Follow §3.
 
 ## 3. Session Start (task mode)
@@ -31,12 +31,14 @@ In task mode, every role, including read-only ones, may update `state.md`, write
 
 **The user assigns you directly** (even if `Relay-To` names someone else or `user`, and whether or not your role is in the `Pipeline`): decide from the user's words whether you are to **take over the task** or only **give a one-off report or opinion**; if unclear, ask. Taking over: the user's word wins. Add the instruction to `Decisions` (`- YYYY-MM-DD user: ...`), set `Relay-To` to yourself, and add or edit `Pipeline` items if the route changed. One-off report: see §6, last paragraph.
 
+**Opening a new task**: before any other work, write `Task`, `Pipeline`, and the user's instruction (in `Decisions`) to `state.md`, then commit and push, so a cut-off session leaves the task on record.
+
 **A new task while one is unfinished** (`Status` is not `idle` or `done`): ask the user whether to park the current card (move it to `docs/handoff/YYYY-MM-DD-parked-<topic>.md`) or defer the new task.
 
 ## 4. State File (`.handoff/state.md`)
 The task card. Overwrite it freely; git history (`git log -p .handoff/state.md`) is the handoff log. Keep it short (about 30 lines); put long content in artifacts.
 
-- `Status`: `idle` | `in-progress` | `handoff` | `blocked` | `done`
+- `Status`: `idle` | `in-progress` | `handoff` | `blocked` | `done` (only after the user accepts; `Relay-To` empty)
 - `Relay-To`: the role that moves next, or `user`. The only authority on whose turn it is.
 - `Task`: one line.
 - `Pipeline`: advisory route as a checklist, one item per step (`- [x] planner: plan`, `- [ ] reviewer: review plan`). The next unchecked item is the default next step. Set by the user, or proposed by the first agent and approved by the user. Empty means: the role the user names, then `user`.
@@ -58,19 +60,19 @@ When your part is done, or you need an answer from someone else:
    - by default, the next unchecked item;
    - if an artifact has a problem, the role responsible for it (e.g. a reviewer's `changes-requested` usually goes to the author);
    - `user` when the decision belongs to the user (scope, direction, trade-offs, permissions), when you can't tell who is responsible, when a stop condition in the plan/spec is met, or when the same issue comes back a second time.
-2. Update `state.md`: `Relay-To`, a precise `Next action`, and `Status` (`handoff`; `blocked` when waiting on the user; `done` with `Relay-To: user` when only the final `user` item is left).
-3. Commit and push. The commit body says why you chose that next role. Optionally add `Relay-To: <role>` as a trailer, in the final paragraph with no blank line before `Co-Authored-By`; it is a log only.
+2. Update `state.md`: `Relay-To`, a precise `Next action`, and `Status` (`handoff`; `blocked` when waiting on a user decision). When the user accepts, the role they tell ticks the `user` item and sets `Status: done`.
+3. Commit and push. The commit body says why you chose that next role. Optionally end the message with a `Relay-To: <role>` trailer line; it is a log only.
 
 **Asking is a handoff.** Write the question in a dated file under the artifacts directory and hand off to the role you ask. That role answers (revising its own artifact if needed) and hands back. Before handing off, finish the work that does not depend on the answer. Do not rewrite another role's artifact or relax its criteria yourself.
 
 **Only the baton holder changes `Relay-To`**: the role it names, or a role the user just assigned. A role the user asks only for a one-off report or opinion (e.g. an ad-hoc audit) does not hold the baton and does not touch `state.md`: it commits and pushes only its own output and reports to the user.
 
 ## 7. Memory
-Provider-native memory (Claude Code auto-memory, `~/.claude/projects/*/memory/`, Codex memories, etc.) must **not** hold anything about this project. It is tied to one machine/account and the next agent cannot see it. Repo memory files are the only project memory.
+Provider-native memory (Claude Code auto-memory, Codex memories, Antigravity Knowledge Items, etc.) must **not** hold anything about this project. It is tied to one machine/account and the next agent cannot see it. Repo memory files are the only project memory.
 
 | Content | Location |
 |---|---|
-| Personal preferences across all projects | user's global `CLAUDE.md` / `AGENTS.md` (not in this repo) |
+| Personal preferences across all projects | user's global `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` (not in this repo) |
 | Facts every role needs | `.handoff/memory.md` |
 | Instructions for one role ("implementer: ...") | `.handoff/roles/<role>/memory.md` |
 | Progress of the current task | `.handoff/state.md` |

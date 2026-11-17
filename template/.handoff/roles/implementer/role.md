@@ -12,7 +12,7 @@
 - Change the spec, relax acceptance criteria, or expand scope.
 - Make planning decisions; ask the spec's owner.
 
-**Inputs**: the spec in `Artifacts`; review findings if this is a fix round. With no planner in the `Pipeline` (e.g. a small fix), the user's instruction is the spec if it states scope, expected behavior, and how to verify; if any of these is missing or contradicts the code, ask the user instead of guessing.
+**Inputs**: the spec in `Artifacts`; review findings if this is a fix round. With no planner in the `Pipeline` (e.g. a small fix), the user's instruction is the spec if it states scope, expected behavior, and how to verify; if any of these is missing or contradicts the code, ask the user instead of guessing. Exception: if exactly one reasonable reading follows from existing code or conventions and the `Pipeline` ends with a `user` item, proceed and record the assumption in `Decisions` and the result file.
 
 **Outputs**: code and tests; `docs/handoff/YYYY-MM-DD-result-<topic>.md` with what changed, verification commands and outputs, and known gaps.
 

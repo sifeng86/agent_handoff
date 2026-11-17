@@ -1,6 +1,6 @@
 # agent_handoff
 
-A git-only handoff template for sequential work across agents (Claude, Codex, ...), accounts, machines, and humans. No CLI to install: just files and git.
+A git-only handoff template for sequential work across agents (Claude Code, Codex, Antigravity `agy`, ...), accounts, machines, and humans. No CLI to install: just files and git.
 
 ## How it works
 
@@ -55,7 +55,7 @@ P=<project>; T=template   # run from this repo's root
 ```
 
 Then:
-- If the project had a `CLAUDE.md` but no `AGENTS.md`, move rules shared by all agents into `AGENTS.md` (Codex reads only `AGENTS.md`), and remove duplicates.
+- If the project had a `CLAUDE.md` but no `AGENTS.md`, move rules shared by all agents into `AGENTS.md` (Codex and agy read `AGENTS.md` natively; Claude gets it through the `@AGENTS.md` import), and remove duplicates.
 - Edit `.handoff/roles/` to fit the project: add roles by copying `_template/`, remove the ones you don't use.
 - Commit and push, so every machine gets it:
   ```bash
@@ -85,6 +85,8 @@ diff <(sed -n '/handoff:begin/,/handoff:end/p' template/AGENTS.md) <(sed -n '/ha
 | Make a role remember something | "implementer, remember: ..." | writes only that role's `memory.md` |
 
 When an agent hands a problem to you (`Relay-To: user`), decide and tell any role directly, usually the planner. It records your decision in `Decisions` and takes over.
+
+To accept finished work, tell any agent "accepted" / "驗收通過": it ticks the `user` item and sets `Status: done`.
 
 ## Default roles
 
@@ -119,3 +121,10 @@ Pipeline:
 | Independent check of finished work | auditor → user |
 
 Without a planner (small fixes), your instruction is the spec: state scope, expected behavior, and how to verify, or the implementer will ask.
+
+## Tool environment notes
+
+Agents must be able to commit and push without a prompt they cannot answer:
+- **Codex**: the `workspace-write` sandbox makes `.git` read-only; add the repo's `.git` to `sandbox_workspace_write.writable_roots`. On hosts where its `bwrap` sandbox fails, run Codex where it works.
+- **agy headless (`-p`)**: it cannot prompt, so commands and writes are denied unless allowed in `permissions.allow` (`~/.gemini/antigravity-cli/settings.json` or `--settings`), e.g. `"command(git)"`, `"write_file(<repo>)"`. Interactive sessions just ask.
+- **Claude Code headless (`-p`)**: allow the tools it needs with `--allowedTools` (e.g. `Bash(git:*)`).
