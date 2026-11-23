@@ -17,5 +17,5 @@ This repo does not install its own template: progress is tracked with the global
 - Ad-hoc roles outside the `Pipeline` never touch `state.md`.
 - In an installed project, only `.handoff/PROTOCOL.md` is template-owned. Install must never overwrite existing files.
 - Agent-facing files are in English; explanations to the user are in Traditional Chinese.
-- When PROTOCOL or a role changes, update `README.md` and `examples/jwt-walkthrough/` so they do not contradict it.
+- When PROTOCOL, a role, or the template entry files change, update `README.md`, `INSTALL.md`, and `examples/jwt-walkthrough/` so they do not contradict it.
 - `default_instruction/` is the user's local copy of global instructions. Not part of this project; never commit it.

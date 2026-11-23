@@ -21,51 +21,43 @@ Rules: [`template/.handoff/PROTOCOL.md`](template/.handoff/PROTOCOL.md). Full ex
 
 ## Install into a project
 
-First install only. Run it on a clean working tree. It checks every target before writing and stops at the first failure, so it never overwrites state, memory, or customized roles. It refuses to run if `.handoff/` already exists.
+### With an agent (recommended)
 
-If it stops after writing (e.g. disk full), undo the partial install and rerun: `rm -r "$P/.handoff"`, then `git -C "$P" status` and restore or delete what it changed (`git -C "$P" checkout -- AGENTS.md CLAUDE.md` for tracked files).
+Open any agent (Claude Code, Codex, agy) in your project and say:
 
-```bash
-P=<project>; T=template   # run from this repo's root
-(
-  fail() { echo "install stopped: $*" >&2; exit 1; }
-  # Check every target before writing anything.
-  { [ -e "$P/.handoff" ] || [ -L "$P/.handoff" ]; } && fail "$P/.handoff already exists (see Update)"
-  for d in "$P/docs" "$P/docs/handoff"; do
-    { [ -e "$d" ] || [ -L "$d" ]; } && [ ! -d "$d" ] && fail "$d exists but is not a directory"
-  done
-  for f in "$P/AGENTS.md" "$P/CLAUDE.md"; do
-    { [ -e "$f" ] || [ -L "$f" ]; } && [ ! -f "$f" ] && fail "$f exists but is not a regular file"
-    [ -e "$f" ] && [ ! -w "$f" ] && fail "$f is not writable"
-  done
-  cp -r "$T/.handoff" "$P/" || fail "copying .handoff; remove $P/.handoff and rerun"
-  { mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"; } || fail "creating docs/handoff; remove $P/.handoff and rerun"
-  # AGENTS.md: copy, or append the whole handoff block (hard rules).
-  if [ -e "$P/AGENTS.md" ]; then
-    { echo; sed -n '/<!-- handoff:begin -->/,/<!-- handoff:end -->/p' "$T/AGENTS.md"; } >> "$P/AGENTS.md" || fail "appending to AGENTS.md"
-  else cp "$T/AGENTS.md" "$P/" || fail "copying AGENTS.md"; fi
-  # CLAUDE.md: copy, or import AGENTS.md on its own line (skipped when either file is a symlink, to avoid a self-import).
-  if [ -L "$P/AGENTS.md" ] || [ -L "$P/CLAUDE.md" ]; then echo "symlinked AGENTS.md/CLAUDE.md: check by hand that Claude sees the handoff block"
-  elif [ -e "$P/CLAUDE.md" ]; then
-    grep -qxF '@AGENTS.md' "$P/CLAUDE.md" || printf '\n@AGENTS.md\n' >> "$P/CLAUDE.md" || fail "appending to CLAUDE.md"
-  else cp "$T/CLAUDE.md" "$P/" || fail "copying CLAUDE.md"; fi
-  grep -q 'handoff:begin' "$P/AGENTS.md" || fail "handoff block missing from AGENTS.md"
-  echo "installed: review, then commit and push (below)"
-)
-```
+> Install agent handoff into this project, following `<path-or-URL of this repo>/INSTALL.md`.
 
-Then:
-- If the project had a `CLAUDE.md` but no `AGENTS.md`, move rules shared by all agents into `AGENTS.md` (Codex and agy read `AGENTS.md` natively; Claude gets it through the `@AGENTS.md` import), and remove duplicates.
-- Edit `.handoff/roles/` to fit the project: add roles by copying `_template/`, remove the ones you don't use.
-- Commit and push, so every machine gets it:
-  ```bash
-  git -C "$P" add .handoff docs/handoff AGENTS.md CLAUDE.md && git -C "$P" commit -m "chore: install agent handoff" && git -C "$P" push
-  ```
-- Optional: if your agent tool has a setting to turn off its automatic memory, consider turning it off for the project. The protocol already forbids project content in native memory, but a setting is harder to ignore.
+It checks the project, asks what it needs one question at a time (existing workflow, branch, roles, artifacts folder, push), shows a summary, and changes nothing until you confirm. It never overwrites existing files.
+
+### By hand
+
+From this repo's root, with `P=<your project>`:
+
+1. Check that `$P/.handoff/` does not exist (if it does, see Update). If the project already has an agent workflow (a `.agent-state.md`, relay commits, a handoff folder), decide first whether to migrate its unfinished task into `.handoff/state.md`.
+2. Copy the protocol, roles, and artifacts folder:
+   ```bash
+   cp -r template/.handoff "$P/" && mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"
+   ```
+3. `AGENTS.md`:
+   - none yet: `cp template/AGENTS.md "$P/"`
+   - already there: copy the lines from `<!-- handoff:begin -->` to `<!-- handoff:end -->` in `template/AGENTS.md` to the end of yours.
+4. `CLAUDE.md`:
+   - none yet: `cp template/CLAUDE.md "$P/"`
+   - already there: add a line `@AGENTS.md` (Claude reads `AGENTS.md` through it; Codex and agy read it natively). Move rules shared by all agents into `AGENTS.md`.
+5. Roles: in `$P/.handoff/roles/`, delete the ones you don't use; add one by copying `_template/`.
+6. Not using the default branch or `docs/handoff/`? Add a line below the handoff block in `$P/AGENTS.md`, e.g. `- Handoff branch: develop`, `- Handoff artifacts: docs/research/ (replaces docs/handoff/ in PROTOCOL and roles)`.
+7. Commit and push, so every machine gets it:
+   ```bash
+   git -C "$P" add .handoff docs/handoff AGENTS.md CLAUDE.md && git -C "$P" commit -m "chore: install agent handoff" && git -C "$P" push
+   ```
+
+Optional: if your agent tool can turn off its automatic memory, consider doing so for the project. The protocol already forbids project content in native memory, but a setting is harder to ignore.
 
 ### Update an installed project
 
-Only `PROTOCOL.md` is template-owned; everything else in `.handoff/` belongs to the project.
+With an agent: "Update agent handoff in this project, following `<path-or-URL>/INSTALL.md`." It replaces `PROTOCOL.md` and asks about each other difference.
+
+By hand: only `PROTOCOL.md` is template-owned; everything else in `.handoff/` belongs to the project.
 
 ```bash
 cp template/.handoff/PROTOCOL.md "$P/.handoff/"
