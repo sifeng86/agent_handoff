@@ -31,12 +31,12 @@ It checks the project, asks what it needs one question at a time (existing workf
 
 ### By hand
 
-From this repo's root, with `P=<your project>`:
+From this repo's root, with `P=<your project>` and `A=docs/handoff` (the artifacts folder; change it if you use another, see step 6):
 
 1. Check that `$P/.handoff/` does not exist (if it does, see Update). If the project already has an agent workflow (a `.agent-state.md`, relay commits, a handoff folder), decide first whether to migrate its unfinished task into `.handoff/state.md`.
-2. Copy the protocol, roles, and artifacts folder:
+2. Copy the protocol and roles, and create the artifacts folder:
    ```bash
-   cp -r template/.handoff "$P/" && mkdir -p "$P/docs/handoff" && touch "$P/docs/handoff/.gitkeep"
+   cp -r template/.handoff "$P/" && mkdir -p "$P/$A" && touch "$P/$A/.gitkeep"
    ```
 3. `AGENTS.md`:
    - none yet: `cp template/AGENTS.md "$P/"`
@@ -46,9 +46,9 @@ From this repo's root, with `P=<your project>`:
    - already there: add a line `@AGENTS.md` (Claude reads `AGENTS.md` through it; Codex and agy read it natively). Move rules shared by all agents into `AGENTS.md`.
 5. Roles: in `$P/.handoff/roles/`, delete the ones you don't use; add one by copying `_template/`.
 6. Not using the default branch or `docs/handoff/`? Add a line below the handoff block in `$P/AGENTS.md`, e.g. `- Handoff branch: develop`, `- Handoff artifacts: docs/research/ (replaces docs/handoff/ in PROTOCOL and roles)`.
-7. Commit and push, so every machine gets it:
+7. On the handoff branch, commit only these files and push, so every machine gets it:
    ```bash
-   git -C "$P" add .handoff docs/handoff AGENTS.md CLAUDE.md && git -C "$P" commit -m "chore: install agent handoff" && git -C "$P" push
+   git -C "$P" add .handoff "$A" AGENTS.md CLAUDE.md && git -C "$P" commit -m "chore: install agent handoff" -- .handoff "$A" AGENTS.md CLAUDE.md && git -C "$P" push
    ```
 
 Optional: if your agent tool can turn off its automatic memory, consider doing so for the project. The protocol already forbids project content in native memory, but a setting is harder to ignore.
@@ -118,5 +118,5 @@ Without a planner (small fixes), your instruction is the spec: state scope, expe
 
 Agents must be able to commit and push without a prompt they cannot answer:
 - **Codex**: the `workspace-write` sandbox makes `.git` read-only; add the repo's `.git` to `sandbox_workspace_write.writable_roots`. On hosts where its `bwrap` sandbox fails, run Codex where it works.
-- **agy headless (`-p`)**: it cannot prompt, so commands and writes are denied unless allowed in `permissions.allow` (`~/.gemini/antigravity-cli/settings.json` or `--settings`), e.g. `"command(git)"`, `"write_file(<repo>)"`. Interactive sessions just ask.
+- **agy headless (`-p`)**: it cannot prompt, so commands and writes are denied unless allowed in `permissions.allow` (`~/.gemini/antigravity-cli/settings.json` or `--settings`), e.g. `"command(git)"`, `"write_file(<repo>)"`, plus every command the agent chains or reads with (`cd`, `ls`, `cat`, `find`, `head`, `grep`, ...); one unlisted command fails the whole turn. Interactive sessions just ask.
 - **Claude Code headless (`-p`)**: allow the tools it needs with `--allowedTools` (e.g. `Bash(git:*)`).
